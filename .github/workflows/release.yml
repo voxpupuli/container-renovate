@@ -1,0 +1,20 @@
+---
+# Managed by modulesync - DO NOT EDIT
+# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
+
+name: 🚀 Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Release
+    uses: voxpupuli/crafty/.github/workflows/release.yml@main
+    with:
+      allowed_owner: voxpupuli
