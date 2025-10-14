@@ -20,7 +20,7 @@ The CVE-Score is quite low.
 Trivy reports no CVEs at all at the moment.
 But this may change, but compared
 
-```
+```text
 # Tue Oct 14 10:09:55 AM CEST 2025
 
 ghcr.io/voxpupuli/renovate:41.146.4-latest (alpine 3.22.2)
