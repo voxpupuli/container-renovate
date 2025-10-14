@@ -48,6 +48,6 @@ You can run renovate directly using `podman` or `docker` on your local:
 podman run -e LOG_LEVEL=debug --rm -v $PWD:/data:Z ghcr.io/voxpupuli/container-renovate --platform=local --dry-run
 ```
 
-### GitLab intigration
+### GitLab integration
 
 see [.gitlab-ci.yml](.gitlab-ci.yml)
