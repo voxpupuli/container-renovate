@@ -42,7 +42,7 @@ for more information see the [`package.json`](package.json)
 
 ### Running renovate locally
 
-You can run renovate directly using `podman` or `docker` on your local:
+You can run renovate directly using `podman` or `docker` on your local system:
 
 ```bash
 podman run -e LOG_LEVEL=debug --rm -v $PWD:/data:Z ghcr.io/voxpupuli/container-renovate --platform=local --dry-run
