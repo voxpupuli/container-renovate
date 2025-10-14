@@ -1,0 +1,13 @@
+---
+renovate:
+  image:
+    name: ghcr.io/voxpupuli/renovate:41.146.4-latest
+    entrypoint: [""]
+  script:
+    - renovate $RENOVATE_EXTRA_FLAGS
+  only:
+    - schedules
+    - triggers
+    - web
+  variables:
+    LOG_LEVEL: debug
