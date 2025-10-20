@@ -1,7 +1,7 @@
 ---
 renovate:
   image:
-    name: ghcr.io/voxpupuli/renovate:41.146.4-latest
+    name: ghcr.io/voxpupuli/renovate:41.153.0-latest
     entrypoint: [""]
   script:
     - renovate $RENOVATE_EXTRA_FLAGS
