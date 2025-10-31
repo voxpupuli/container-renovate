@@ -3,6 +3,6 @@
     "node": ">=22.0.0 <23.0.0"
   },
   "dependencies": {
-    "renovate": "41.165.5"
+    "renovate": "41.166.0"
   }
 }
