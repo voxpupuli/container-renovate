@@ -12,12 +12,6 @@ See [package.json](package.json) for details.
 This is a npm application running in an alpine container.
 Allthought there is a very good upstream container, this container is based on alpine and much smaller.
 
-## 🚧 Node Version ⚠️
-
-The container is build on base of `node:22-alpine` (maybe updated in the future, see [Containerfile](Containerfile)).
-We would like to use newer node, but renovate depends on 22.x.
-It works with node 24.x, but renovate does not support it officially yet and throws errors.
-
 ## CVEs
 
 The CVE-Score is quite low.
