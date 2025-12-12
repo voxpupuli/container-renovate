@@ -7,6 +7,8 @@ on:
       - 'main'
     tags:
       - '*'
+  schedule:
+    - cron: "0 8,16 * * *"
   workflow_dispatch:
 
 permissions:
@@ -22,15 +24,6 @@ jobs:
       - name: Source checkout
         uses: actions/checkout@v6
 
-      - name: Get renovate version
-        id: get_version
-        run: echo "r_version="$(jq -r '.dependencies."renovate"' package.json | sed 's/\^//') >> $GITHUB_OUTPUT
-
-      # Parse ref_name and if it is main, change it ot latest
-      - name: Set tag
-        id: set_tag
-        run: echo "tag=$(echo ${{ github.ref_name }} | sed 's/^main$/latest/')" >> $GITHUB_OUTPUT
-
       - name: Build Vox Pupuli renovate container
         uses: voxpupuli/gha-build-and-publish-a-container@v2
         with:
@@ -40,9 +33,7 @@ jobs:
           docker_username: voxpupulibot
           docker_password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
           tags: |
-            ghcr.io/voxpupuli/renovate:${{ steps.get_version.outputs.r_version }}-${{ steps.set_tag.outputs.tag }}
             ghcr.io/voxpupuli/renovate:latest
-            docker.io/voxpupuli/renovate:${{ steps.get_version.outputs.r_version }}-${{ steps.set_tag.outputs.tag }}
             docker.io/voxpupuli/renovate:latest
 
       - name: Update Docker Hub Description
