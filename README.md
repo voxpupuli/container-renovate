@@ -4,6 +4,13 @@
 [![License](https://img.shields.io/github/license/voxpupuli/container-renovate.svg)](https://github.com/voxpupuli/container-renovate/blob/main/LICENSE)
 [![Sponsored by betadots GmbH](https://img.shields.io/badge/Sponsored%20by-betadots%20GmbH-blue.svg)](https://www.betadots.de)
 
+## Information
+
+⚠️ as of `Fri Dec 12 2025` we only will build the latest version of renovate.
+This will be done twice a day at 08:00 and 16:00 UTC.
+
+Renovate itself pushes updates so frequently, pinning to a specific version is not very useful.
+
 ## Introduction
 
 This container can be used to update dependencies in your projects.
