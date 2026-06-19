@@ -1,3 +1,21 @@
 ---
-.github/workflows/ci.yml:
+:global:
   image_tag: 'ci/renovate:${{ github.sha }}'
+.github/workflows/build_container.yml:
+  matrix_command: "jq -cn '{include: [{platform: \"amd64\", runner: \"ubuntu-24.04\"}, {platform: \"arm64\", runner: \"ubuntu-24.04-arm\"}]}'"
+  publish_schedules:
+    - '0 8,16 * * *'
+  publish_runner: '${{ matrix.runner }}'
+  publish_build_arch: 'linux/${{ matrix.platform }}'
+  publish_tags:
+    - 'ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-${{ matrix.platform }}'
+  publish_manifest_steps:
+    - name: Create multi-architecture manifests
+      commands:
+        - >-
+          docker buildx imagetools create
+          -t ghcr.io/${{ github.repository_owner }}/renovate:latest
+          -t docker.io/${{ github.repository_owner }}/renovate:latest
+          ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-arm64
+          ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-amd64
+  dockerhub_repository: voxpupuli/renovate
