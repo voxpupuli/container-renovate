@@ -28,6 +28,28 @@
         "#\\s*renovate:\\s*depName=(?<depName>.*?)\\s*openVoxRelease=(?<openVoxRelease>\\d+)\\s*\\n\\s*(?<key>\\w+_version):\\s*\"(?<currentValue>.*?)\""
       ],
       "registryUrlTemplate": "https://apt.voxpupuli.org?suite=ubuntu24.04&components=openvox{{openVoxRelease}}&binaryArch=amd64"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "rubygems",
+      "versioningTemplate": "ruby",
+      "managerFilePatterns": [
+        "/Containerfile/"
+      ],
+      "matchStrings": [
+        "#\\s*renovate:\\s*depName=(?<depName>[a-zA-Z0-9_-]+)\\s+datasource=rubygems\\s*\\n\\s*ENV\\s+RUBYGEM_[A-Z0-9_-]+=\\$\\{RUBYGEM_[A-Z0-9_-]+:-?(?<currentValue>[^}\\n]+)\\}"
+      ]
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "rubygems",
+      "versioningTemplate": "ruby",
+      "managerFilePatterns": [
+        "/build_platforms.yaml/"
+      ],
+      "matchStrings": [
+        "#\\s*renovate:\\s*depName=(?<depName>[a-zA-Z0-9_-]+)\\s+datasource=rubygems\\s*\\n\\s*(?<key>openvox_version):\\s*'(?<currentValue>[^']+)'"
+      ]
     }
   ],
   "extends": [
@@ -46,6 +68,10 @@
       "matchPackageNames": [
         "/.*/"
       ]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "enabled": true
     }
   ]
 }
