@@ -31,7 +31,7 @@ jobs:
             runner: ubuntu-24.04-arm
     steps:
       - name: Source checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build Vox Pupuli renovate container
         uses: voxpupuli/gha-build-and-publish-a-container@v2
@@ -82,7 +82,7 @@ jobs:
       - create-multiarch-manifests
     steps:
       - name: Source checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Update Docker Hub Description
         uses: peter-evans/dockerhub-description@v5
