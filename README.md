@@ -56,3 +56,12 @@ podman run -e LOG_LEVEL=debug --rm -v $PWD:/data:Z ghcr.io/voxpupuli/container-r
 ### GitLab integration
 
 see [.gitlab-ci.yml](.gitlab-ci.yml)
+
+### Config validation
+
+```console
+cd demo/something/foo
+podman run -it --rm -v $PWD:/data:Z --entrypoint renovate-config-validator ghcr.io/voxpupuli/renovate:latest
+ INFO: Validating renovate.json
+ INFO: Config validated successfully against 1 file(s)
+```
