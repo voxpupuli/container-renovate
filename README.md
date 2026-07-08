@@ -65,3 +65,32 @@ podman run -it --rm -v $PWD:/data:Z --entrypoint renovate-config-validator ghcr.
  INFO: Validating renovate.json
  INFO: Config validated successfully against 1 file(s)
 ```
+
+### dry-run
+
+```console
+cd demo/something/foo
+podman run -it --rm -v $PWD:/data:Z ghcr.io/voxpupuli/renovate:latest --dry-run --platform=local
+Running /container-entrypoint.d/999_git_add_safe_directory.sh
+ INFO: Renovate started
+       "renovateVersion": "43.255.2"
+ WARN: cli config dryRun property has been changed to full
+ INFO: Repository started (repository=local)
+       "renovateVersion": "43.255.2"
+ INFO: Dependency extraction complete (repository=local)
+       "stats": {
+         "managers": {
+           "leiningen": {"fileCount": 1, "depCount": 71},
+           "regex": {"fileCount": 3, "depCount": 21}
+         },
+         "total": {"fileCount": 4, "depCount": 92}
+       }
+ INFO: Repository finished (repository=local)
+       "cloned": undefined,
+       "durationMs": 11603,
+       "result": undefined,
+       "status": undefined,
+       "enabled": undefined,
+       "onboarded": undefined
+ INFO: Renovate was run at log level "info". Set LOG_LEVEL=debug in environment variables to see extended debug logs.
+```
