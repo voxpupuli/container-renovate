@@ -1,91 +1,108 @@
 ---
-name: Build and publish a 🛢️ container
+# Managed by modulesync - DO NOT EDIT
+# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
 
+name: 📦 Build and Publish
+
+# yamllint disable-line rule:truthy
 on:
   push:
     branches:
-      - 'main'
+      - main
     tags:
       - '*'
   schedule:
-    - cron: "0 8,16 * * *"
+    - cron: '0 8,16 * * *'
   workflow_dispatch:
+
+concurrency:
+  group: build-and-publish-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
+  setup-matrix:
+    name: Set up build matrix
+    runs-on: ubuntu-latest
+    outputs:
+      build-matrix: ${{ steps.build-matrix.outputs.build-matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Generate build matrix
+        id: build-matrix
+        run: |
+          matrix_json=$(jq -cn '{include: [{platform: "amd64", runner: "ubuntu-24.04"}, {platform: "arm64", runner: "ubuntu-24.04-arm"}]}')
+          echo "build-matrix=$matrix_json" >> "$GITHUB_OUTPUT"
+
   build-and-push-container:
+    name: Build and publish container
     runs-on: ${{ matrix.runner }}
+    needs:
+      - setup-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.setup-matrix.outputs.build-matrix) }}
     permissions:
       contents: read
       packages: write
-    strategy:
-      matrix:
-        include:
-          - label: x86_64
-            platform: amd64
-            runner: ubuntu-24.04
-          - label: AArch64
-            platform: arm64
-            runner: ubuntu-24.04-arm
     steps:
-      - name: Source checkout
-        uses: actions/checkout@v7
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Build Vox Pupuli renovate container
-        uses: voxpupuli/gha-build-and-publish-a-container@v2
+      - name: Build and publish container
+        id: build
+        uses: voxpupuli/gha-build-and-publish-a-container@f1680271a3fd34267c1401c760a15f45a9cf34ca # v2.0.0
         with:
           registry_password: ${{ secrets.GITHUB_TOKEN }}
           build_arch: linux/${{ matrix.platform }}
+          build_context: .
           buildfile: Containerfile
-          docker_username: voxpupulibot
-          docker_password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-${{ matrix.platform }}
 
   create-multiarch-manifests:
+    name: Create multi-architecture manifests
     runs-on: ubuntu-latest
+    needs:
+      - setup-matrix
+      - build-and-push-container
     permissions:
       contents: read
       packages: write
-    needs:
-      - build-and-push-container
     steps:
-      - name: Log in to the ghcr.io registry
-        uses: docker/login-action@v4
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Log in to the docker.io registry
-        uses: docker/login-action@v4
+      - name: Log in to Docker Hub
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
         with:
           registry: docker.io
           username: voxpupulibot
           password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
 
-      - name: Create multiarch manifests
+      - name: Create multi-architecture manifests
         run: |
-          docker buildx imagetools create -t ghcr.io/${{ github.repository_owner }}/renovate:latest \
-            ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-arm64 \
-            ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-amd64
-
-          docker buildx imagetools create -t docker.io/${{ github.repository_owner }}/renovate:latest \
-            ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-arm64 \
-            ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-amd64
+          docker buildx imagetools create -t ghcr.io/${{ github.repository_owner }}/renovate:latest -t docker.io/${{ github.repository_owner }}/renovate:latest ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-arm64 ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-amd64
 
   update-dockerhub-description:
+    name: Update Docker Hub description
     runs-on: ubuntu-latest
     needs:
       - create-multiarch-manifests
     steps:
-      - name: Source checkout
-        uses: actions/checkout@v7
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Update Docker Hub Description
-        uses: peter-evans/dockerhub-description@v5
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
         with:
           username: voxpupulibot
           password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
