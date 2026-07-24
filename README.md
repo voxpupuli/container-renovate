@@ -21,27 +21,17 @@ Allthought there is a very good upstream container, this container is based on a
 
 ## CVEs
 
-The CVE-Score is quite low.
-Trivy reports no CVEs at all at the moment.
-But this may change, but compared
+The target is to have a container with no CVEs.
+It is regularly updated and build with the latest renovate version.
 
-```text
-# Tue Oct 14 10:09:55 AM CEST 2025
-
-ghcr.io/voxpupuli/renovate:41.146.4-latest (alpine 3.22.2)
-==================================================
-Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
-
-ghcr.io/renovatebot/renovate:latest (ubuntu 24.04)
-==================================================
-Total: 1249 (UNKNOWN: 0, LOW: 71, MEDIUM: 1177, HIGH: 1, CRITICAL: 0)
-```
+for more information see the [Container vulnerability scan issue](https://github.com/voxpupuli/container-renovate/issues/158)
 
 ## Usage
 
 Main tools in the container:
 
 - renovate
+- renovate-config-validator
 
 for more information see the [`package.json`](package.json)
 
