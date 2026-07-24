@@ -1,6 +1,8 @@
 ---
 :global:
   image_tag: 'ci/renovate:${{ github.sha }}'
+.github/scripts/update_vulnerability_issue.rb:
+  unmanaged: false
 .github/workflows/build_container.yml:
   matrix_command: "jq -cn '{include: [{platform: \"amd64\", runner: \"ubuntu-24.04\"}, {platform: \"arm64\", runner: \"ubuntu-24.04-arm\"}]}'"
   publish_schedules:
@@ -18,4 +20,5 @@
           -t docker.io/${{ github.repository_owner }}/renovate:latest
           ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-arm64
           ghcr.io/${{ github.repository_owner }}/renovate:${{ github.sha }}-amd64
+  publish_vulnerability_issue_image: 'ghcr.io/${{ github.repository_owner }}/renovate:latest'
   dockerhub_repository: voxpupuli/renovate
