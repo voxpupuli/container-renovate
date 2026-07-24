@@ -118,12 +118,37 @@ jobs:
         id: trivy
         continue-on-error: true
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        env:
+          TRIVY_TABLE_MODE: detailed
         with:
           image-ref: 'ghcr.io/${{ github.repository_owner }}/renovate:latest'
           scanners: vuln
+          severity: HIGH,CRITICAL,MEDIUM,LOW
           format: table
           output: trivy-report.txt
           exit-code: '0'
+
+      - name: Upload Grype report
+        id: grype-report
+        if: ${{ always() }}
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: grype-report
+          path: grype-report.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload Trivy report
+        id: trivy-report
+        if: ${{ always() }}
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: trivy-report
+          path: trivy-report.txt
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Create or update vulnerability issue
         if: ${{ always() }}
@@ -133,6 +158,8 @@ jobs:
           IMAGE: 'ghcr.io/${{ github.repository_owner }}/renovate:latest'
           GRYPE_OUTCOME: ${{ steps.grype.outcome }}
           TRIVY_OUTCOME: ${{ steps.trivy.outcome }}
+          GRYPE_REPORT_URL: ${{ steps.grype-report.outputs.artifact-url }}
+          TRIVY_REPORT_URL: ${{ steps.trivy-report.outputs.artifact-url }}
 
   update-dockerhub-description:
     name: Update Docker Hub description
