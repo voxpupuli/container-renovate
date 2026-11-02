@@ -9,10 +9,27 @@ RUN npm install --global "npm@${NPM_VERSION}" \
 
 FROM base AS build
 
-WORKDIR /npm
-COPY package.json /npm
+ARG PNPM_VERSION=12.16.1
 
-RUN npm install
+WORKDIR /build
+RUN apk add --no-cache --update \
+    jq \
+    patch
+
+RUN npm install --global \
+        "pnpm@${PNPM_VERSION}" \
+    && npm cache clean --force
+
+RUN export RENOVATE_VERSION=$(wget -qO - https://api.github.com/repos/renovatebot/renovate/releases/latest | jq -r .tag_name) \
+    && wget -qO - https://github.com/renovatebot/renovate/archive/refs/tags/${RENOVATE_VERSION}.tar.gz | tar xzf - \
+    # feat(manager/puppet): support metadata.json dependencies (see https://github.com/renovatebot/renovate/pull/38055)
+    && wget -q https://patch-diff.githubusercontent.com/raw/renovatebot/renovate/pull/38055.patch \
+    && mv renovate-${RENOVATE_VERSION} renovate \
+    && cd renovate \
+    && patch -p1  < ../38055.patch \
+    && pnpm version ${RENOVATE_VERSION}-voxpupuli \
+    && pnpm build \
+    && pnpm prune --prod
 
 ###############################################################################
 
@@ -32,21 +49,22 @@ ENV RENOVATE_X_IGNORE_RE2=true
 COPY Containerfile /
 COPY container-entrypoint.sh /
 COPY container-entrypoint.d /container-entrypoint.d
-COPY --from=build /npm /npm
+COPY --from=build /build/renovate /usr/local/renovate
 
-RUN apk update && apk upgrade --no-cache \
-    && apk add --no-cache --update \
+RUN apk upgrade --no-cache \
+    && apk add --no-cache \
         bash \
         git \
         socat \
-    && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh
+    && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh \
+    && ln -sf /usr/local/renovate/dist/renovate.js /usr/local/bin/renovate \
+    && ln -sf /usr/local/renovate/dist/config-validator.js /usr/local/bin/renovate-config-validator
 
 # fix ENOGITREPO Not running from a git repository.
 RUN git config --global --add safe.directory '*'
 
 WORKDIR /data
 
-ENV PATH="$PATH:/npm/node_modules/.bin"
 ENV NODE_OPTIONS="--use-openssl-ca"
 
 ENTRYPOINT [ "/container-entrypoint.sh" ]
