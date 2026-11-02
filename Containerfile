@@ -1,5 +1,12 @@
 FROM docker.io/library/node:24-alpine AS base
 
+ARG NPM_VERSION=12.0.1
+
+RUN npm install --global "npm@${NPM_VERSION}" \
+    && npm cache clean --force
+
+###############################################################################
+
 FROM base AS build
 
 COPY --from=ghcr.io/pnpm/pnpm:12-alpine /opt/pnpm /opt/pnpm
