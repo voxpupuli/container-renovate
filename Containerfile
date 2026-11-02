@@ -1,9 +1,9 @@
 FROM docker.io/library/node:24-alpine AS base
 
+FROM base AS build
+
 COPY --from=ghcr.io/pnpm/pnpm:12-alpine /opt/pnpm /opt/pnpm
 RUN for bin in pnpm pn pnpx pnx; do ln -s "/opt/pnpm/$bin" "/usr/local/bin/$bin"; done
-
-FROM base AS build
 
 WORKDIR /build
 RUN apk add --no-cache --update \
@@ -19,7 +19,8 @@ RUN export RENOVATE_VERSION=$(curl -s https://api.github.com/repos/renovatebot/r
     && cd renovate \
     && patch -p1  < ../38055.patch \
     && pnpm version ${RENOVATE_VERSION}-voxpupuli \
-    && pnpm build
+    && pnpm build \
+    && pnpm prune --prod
 
 ###############################################################################
 
@@ -41,8 +42,8 @@ COPY container-entrypoint.sh /
 COPY container-entrypoint.d /container-entrypoint.d
 COPY --from=build /build/renovate /usr/local/renovate
 
-RUN apk update && apk upgrade --no-cache \
-    && apk add --no-cache --update \
+RUN apk upgrade --no-cache \
+    && apk add --no-cache \
         bash \
         git \
         socat \
