@@ -9,16 +9,10 @@ RUN npm install --global "npm@${NPM_VERSION}" \
 
 FROM base AS build
 
-ARG PNPM_VERSION=12.16.1
-
 WORKDIR /build
 RUN apk add --no-cache --update \
     jq \
     patch
-
-RUN npm install --global \
-        "pnpm@${PNPM_VERSION}" \
-    && npm cache clean --force
 
 RUN export RENOVATE_VERSION=$(wget -qO - https://api.github.com/repos/renovatebot/renovate/releases/latest | jq -r .tag_name) \
     && wget -qO - https://github.com/renovatebot/renovate/archive/refs/tags/${RENOVATE_VERSION}.tar.gz | tar xzf - \
@@ -27,9 +21,10 @@ RUN export RENOVATE_VERSION=$(wget -qO - https://api.github.com/repos/renovatebo
     && mv renovate-${RENOVATE_VERSION} renovate \
     && cd renovate \
     && patch -p1  < ../38055.patch \
-    && pnpm version ${RENOVATE_VERSION}-voxpupuli \
-    && pnpm build \
-    && pnpm prune --prod
+    && npx pnpm install \
+    && npx pnpm version ${RENOVATE_VERSION}-voxpupuli \
+    && npx pnpm build \
+    && npx pnpm prune --prod
 
 ###############################################################################
 
