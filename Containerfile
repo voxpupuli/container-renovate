@@ -48,7 +48,8 @@ RUN apk upgrade --no-cache \
         git \
         socat \
     && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh \
-    && ln -sf /usr/local/renovate/dist/renovate.js /usr/local/bin/renovate
+    && ln -sf /usr/local/renovate/dist/renovate.js /usr/local/bin/renovate \
+    && ln -sf /usr/local/renovate/dist/config-validator.js /usr/local/bin/renovate-config-validator
 
 # fix ENOGITREPO Not running from a git repository.
 RUN git config --global --add safe.directory '*'
