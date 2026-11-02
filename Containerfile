@@ -9,13 +9,16 @@ RUN npm install --global "npm@${NPM_VERSION}" \
 
 FROM base AS build
 
-COPY --from=ghcr.io/pnpm/pnpm:12-alpine /opt/pnpm /opt/pnpm
-RUN for bin in pnpm pn pnpx pnx; do ln -s "/opt/pnpm/$bin" "/usr/local/bin/$bin"; done
+ARG PNPM_VERSION=12.16.1
 
 WORKDIR /build
 RUN apk add --no-cache --update \
     jq \
     patch
+
+RUN npm install --global \
+        "pnpm@${PNPM_VERSION}" \
+    && npm cache clean --force
 
 RUN export RENOVATE_VERSION=$(wget -qO - https://api.github.com/repos/renovatebot/renovate/releases/latest | jq -r .tag_name) \
     && wget -qO - https://github.com/renovatebot/renovate/archive/refs/tags/${RENOVATE_VERSION}.tar.gz | tar xzf - \
