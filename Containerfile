@@ -14,11 +14,10 @@ RUN for bin in pnpm pn pnpx pnx; do ln -s "/opt/pnpm/$bin" "/usr/local/bin/$bin"
 
 WORKDIR /build
 RUN apk add --no-cache --update \
-    curl \
     jq \
     patch
 
-RUN export RENOVATE_VERSION=$(curl -s https://api.github.com/repos/renovatebot/renovate/releases/latest | jq -r .tag_name) \
+RUN export RENOVATE_VERSION=$(wget -qO - https://api.github.com/repos/renovatebot/renovate/releases/latest | jq -r .tag_name) \
     && wget -qO - https://github.com/renovatebot/renovate/archive/refs/tags/${RENOVATE_VERSION}.tar.gz | tar xzf - \
     # feat(manager/puppet): support metadata.json dependencies (see https://github.com/renovatebot/renovate/pull/38055)
     && wget -q https://patch-diff.githubusercontent.com/raw/renovatebot/renovate/pull/38055.patch \
