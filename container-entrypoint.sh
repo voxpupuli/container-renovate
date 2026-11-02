@@ -8,4 +8,4 @@ if [ -d /container-entrypoint.d/ ]; then
         -exec echo Running {} \; -exec bash {} \;
 fi
 
-exec /npm/node_modules/.bin/renovate "$@"
+exec /usr/local/bin/renovate "$@"

@@ -15,7 +15,7 @@ Renovate itself pushes updates so frequently, pinning to a specific version is n
 
 This container can be used to update dependencies in your projects.
 It encapsulates [renovate](https://github.com/renovatebot/renovate) and all necessary plugins.
-See [package.json](package.json) for details.
+See [Containerfile](Containerfile) for details.
 This is a npm application running in an alpine container.
 Allthought there is a very good upstream container, this container is based on alpine and much smaller.
 
@@ -33,14 +33,14 @@ Main tools in the container:
 - renovate
 - renovate-config-validator
 
-for more information see the [`package.json`](package.json)
+for more information see the [`Containerfile`](Containerfile)
 
 ### Running renovate locally
 
 You can run renovate directly using `podman` or `docker` on your local system:
 
 ```bash
-podman run -e LOG_LEVEL=debug --rm -v $PWD:/data:Z ghcr.io/voxpupuli/container-renovate --platform=local --dry-run
+podman run -e LOG_LEVEL=debug --rm -v $PWD:/data:Z ghcr.io/voxpupuli/renovate --platform=local --dry-run
 ```
 
 ### GitLab integration
