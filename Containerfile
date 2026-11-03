@@ -50,6 +50,8 @@ RUN apk upgrade --no-cache \
     && apk add --no-cache \
         bash \
         git \
+        openssh-keygen \
+        gpg \
         socat \
     && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh \
     && ln -sf /usr/local/renovate/dist/renovate.js /usr/local/bin/renovate \
