@@ -51,6 +51,7 @@ RUN apk upgrade --no-cache \
         bash \
         git \
         openssh-keygen \
+        openssh-client-default \
         gpg \
         socat \
     && chmod +x /container-entrypoint.sh /container-entrypoint.d/*.sh \
