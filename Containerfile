@@ -52,6 +52,7 @@ COPY --from=build /build/renovate /usr/local/renovate
 RUN apk upgrade --no-cache \
     && apk add --no-cache \
         bash \
+        yq \
         git \
         openssh-keygen \
         openssh-client-default \
