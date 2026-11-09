@@ -22,9 +22,7 @@ Allthought there is a very good upstream container, this container is based on a
 ## CVEs
 
 The target is to have a container with no CVEs.
-It is regularly updated and build with the latest renovate version.
-
-for more information see the [Container vulnerability scan issue](https://github.com/voxpupuli/container-renovate/issues/158)
+It is regularly updated and built with the latest Renovate version.
 
 ## Usage
 
