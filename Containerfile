@@ -18,12 +18,9 @@ RUN export RENOVATE_VERSION=$(wget -qO - https://api.github.com/repos/renovatebo
     && wget -qO - https://github.com/renovatebot/renovate/archive/refs/tags/${RENOVATE_VERSION}.tar.gz | tar xzf - \
     # feat(manager/puppet): support metadata.json dependencies (see https://github.com/renovatebot/renovate/pull/38055)
     && wget -q https://patch-diff.githubusercontent.com/raw/renovatebot/renovate/pull/38055.patch \
-    # feat(github): add support for pinning dependency dashboard issue (see https://github.com/renovatebot/renovate/pull/47954)
-    && wget -q https://patch-diff.githubusercontent.com/raw/renovatebot/renovate/pull/47954.patch \
     && mv renovate-${RENOVATE_VERSION} renovate \
     && cd renovate \
     && patch -p1  < ../38055.patch \
-    && patch -p1  < ../47954.patch \
     && npx pnpm install \
     && npx pnpm version ${RENOVATE_VERSION}-voxpupuli \
     && npx pnpm build \
