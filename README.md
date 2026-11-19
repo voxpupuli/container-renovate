@@ -1,6 +1,6 @@
 # Voxpupuli Renovate Container
 
-[![CI](https://github.com/voxpupuli/container-renovate/actions/workflows/ci.yaml/badge.svg)](https://github.com/voxpupuli/container-renovate/actions/workflows/ci.yaml)
+[![CI](https://github.com/voxpupuli/container-renovate/actions/workflows/ci.yml/badge.svg)](https://github.com/voxpupuli/container-renovate/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/voxpupuli/container-renovate.svg)](https://github.com/voxpupuli/container-renovate/blob/main/LICENSE)
 [![Sponsored by betadots GmbH](https://img.shields.io/badge/Sponsored%20by-betadots%20GmbH-blue.svg)](https://www.betadots.de)
 
